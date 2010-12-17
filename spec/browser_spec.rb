@@ -294,6 +294,16 @@ describe "Browser" do
       el.should be_kind_of(Celerity::ClickableElement)
       el.rel.should == "stylesheet"
     end
+
+    it "includes the xpath in an exception message" do
+      browser.goto(WatirSpec.files + "/forms_with_input_elements.html")
+
+      the_xpath = "//div[contains(@class, 'this does not exist')]"
+      el = browser.element_by_xpath(the_xpath)
+
+      lambda { el.visible? }.should raise_error(
+        Celerity::Exception::UnknownObjectException, Regexp.new(Regexp.escape(the_xpath)))
+    end
   end
 
   describe "#focused_element" do
